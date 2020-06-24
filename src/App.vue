@@ -1,28 +1,46 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app">
+        <header>
+            <h1>Заметки</h1>
+        </header>
+
+        <label>
+            <input type="text">
+        </label>
+        <NotesList :notes="notes"/>
+        <button>Создать заметку</button>
+
+        <footer>Тестовое задание</footer>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+    import NotesList from './components/NotesList.vue'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: 'App',
+        components: {
+            NotesList
+        },
+        data() {
+            return {
+                notes: []
+            };
+        },
+        methods: {
+            async setNotes() {
+                const response = await fetch("https://localhost:5001/api/notes");
+
+                if (response.ok) {
+                    this.notes = await response.json();
+                }
+            }
+        },
+        mounted() {
+            this.setNotes();
+        },
+    }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
