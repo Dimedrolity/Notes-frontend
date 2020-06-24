@@ -5,7 +5,7 @@
         </header>
 
         <label>
-            <input type="text">
+            <input type="text" ref="searchInput" @input="showNotesContainsInputValue">
         </label>
         <NotesList :notes="notes" @deleteNoteWithId="deleteNoteWithId"/>
         <button>Создать заметку</button>
@@ -28,8 +28,10 @@
             };
         },
         methods: {
-            async setNotes() {
-                const response = await fetch("https://localhost:5001/api/notes");
+            async showNotes() {
+                const response = await fetch("https://localhost:5001/api/notes", {
+                    method: 'GET'
+                });
 
                 if (response.ok) {
                     this.notes = await response.json();
@@ -37,17 +39,25 @@
             },
             deleteNoteWithId(noteId) {
                 this.notes = this.notes.filter((note) => note.id !== noteId);
-                this.sendDeleteRequest(noteId);
+
+                fetch(`https://localhost:5001/api/notes/delete/${noteId}`, {
+                    method: 'DELETE'
+                });
             },
-            sendDeleteRequest(noteId) {
-                fetch(`https://localhost:5001/api/notes/delete/${noteId}`,
-                    {
-                        method: 'DELETE'
-                    });
-            }
+            async showNotesContainsInputValue() {
+                const inputValue = this.$refs.searchInput.value;
+
+                const response = await fetch(`https://localhost:5001/api/notes/contains/${inputValue}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    this.notes = await response.json();
+                }
+            },
         },
         mounted() {
-            this.setNotes();
+            this.showNotes();
         },
     }
 </script>
