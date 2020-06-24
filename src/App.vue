@@ -7,7 +7,7 @@
         <label>
             <input type="text">
         </label>
-        <NotesList :notes="notes"/>
+        <NotesList/>
         <button>Создать заметку</button>
 
         <footer>Тестовое задание</footer>
@@ -22,22 +22,22 @@
         components: {
             NotesList
         },
-        data() {
-            return {
-                notes: []
-            };
-        },
+        // data() {
+        //     return {
+        //         notes: []
+        //     };
+        // },
         methods: {
-            async setNotes() {
-                const response = await fetch("https://localhost:5001/api/notes");
-
-                if (response.ok) {
-                    this.notes = await response.json();
-                }
-            }
+            // async setNotes() {
+            //     const response = await fetch("https://localhost:5001/api/notes");
+            //
+            //     if (response.ok) {
+            //         this.notes = await response.json();
+            //     }
+            // }
         },
         mounted() {
-            this.setNotes();
+            //this.setNotes();
         },
     }
 </script>
