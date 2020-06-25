@@ -8,15 +8,14 @@
             <input type="text" ref="searchInput"
                    @input="filterNotesByContainsInputValue">
         </label>
-        <button>Создать заметку</button>
+        <button @click="setCurrentNoteToEmptyNote">Создать заметку</button>
         <NotesList :notes="notes"/>
 
-        <!-- без if будет warning -->
-        <Note v-if="this.notes.length > 0"
-              :id="firstNote.id" :content="firstNote.content"
-              :title="firstNote.title" :date-of-last-change="firstNote.dateOfLastChange"
+        <Note v-if="this.isCurrentNoteInitialized" :id="this.currentNote.id" :content="this.currentNote.content"
+              :title="this.currentNote.title" :date-of-last-change="this.currentNote.dateOfLastChange"
               @deleteNoteWithId="deleteNoteWithId"
-              @editNoteWithId="editNoteWithId"/>
+              @editNoteWithId="editNoteWithId"
+              @createNote="createNote"/>
 
         <footer>Тестовое задание</footer>
     </div>
@@ -34,13 +33,10 @@
         },
         data() {
             return {
-                notes: []
+                notes: [],
+                currentNote: {},
+                isCurrentNoteInitialized: false,
             };
-        },
-        computed: {
-            firstNote() {
-                return this.notes[0];
-            }
         },
         mounted() {
             this.initializeNotes();
@@ -53,8 +49,16 @@
 
                 if (response.ok) {
                     this.notes = await response.json();
+
+                    if (this.notes.length > 0)
+                        this.currentNote = this.notes[0];
+                    else
+                        this.setCurrentNoteToEmptyNote();
+
+                    this.isCurrentNoteInitialized = true;
                 }
             },
+
             async deleteNoteWithId(noteId) {
                 const response = await fetch(`https://localhost:5001/api/notes/delete/${noteId}`, {
                     method: 'DELETE'
@@ -64,6 +68,7 @@
                     this.initializeNotes();
                 }
             },
+
             async filterNotesByContainsInputValue() {
                 const inputValue = this.$refs.searchInput.value;
 
@@ -93,6 +98,7 @@
 
                 alert('Сохранено');
             },
+
             async createNote(noteTitle, noteContent) {
                 const formData = new FormData();
                 formData.append('Title', noteTitle);
@@ -109,7 +115,11 @@
 
                 alert('Создано');
             },
-        },
+
+            setCurrentNoteToEmptyNote() {
+                this.currentNote = {title: '', content: ''};
+            }
+        }
     }
 </script>
 

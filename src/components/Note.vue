@@ -9,10 +9,9 @@
 
         <label>
             <textarea cols="30" rows="10"
-                      placeholder="Введите содержимое заметки" ref="noteContent"
-            >{{this.content}}</textarea>
+                      placeholder="Введите содержимое заметки" :value="this.content"
+                      ref="noteContent"></textarea>
         </label>
-
 
         <button v-if="this.id != null" type="button" @click="emitEditOfThisNote()">Сохранить</button>
         <button v-else type="button" @click="emitCreateOfThisNote">Создать</button>
@@ -26,11 +25,10 @@
         name: "Note",
         props: {
             id: {
-                type: [Number, null],
-                required: true,
+                type: Number,
             },
             title: {
-                type: [String, null],
+                type: String,
                 required: true,
             },
             content: {
@@ -38,8 +36,7 @@
                 required: true,
             },
             dateOfLastChange: {
-                type: [String, null],
-                required: true,
+                type: String,
             },
         },
         methods: {
@@ -57,5 +54,4 @@
 </script>
 
 <style scoped>
-
 </style>
