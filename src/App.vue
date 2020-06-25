@@ -9,7 +9,7 @@
                    @input="filterNotesByContainsInputValue">
         </label>
         <button @click="setCurrentNoteToEmptyNote">Создать заметку</button>
-        <NotesList :notes="notes"/>
+        <NotesList :notes="notes" @setCurrentNoteToNoteWithId="setCurrentNoteToNoteWithId"/>
 
         <Note v-if="this.isCurrentNoteInitialized" :id="this.currentNote.id" :content="this.currentNote.content"
               :title="this.currentNote.title" :date-of-last-change="this.currentNote.dateOfLastChange"
@@ -95,8 +95,6 @@
                 if (response.ok) {
                     this.initializeNotes();
                 }
-
-                alert('Сохранено');
             },
 
             async createNote(noteTitle, noteContent) {
@@ -112,12 +110,14 @@
                 if (response.ok) {
                     this.initializeNotes();
                 }
-
-                alert('Создано');
             },
 
             setCurrentNoteToEmptyNote() {
                 this.currentNote = {title: '', content: ''};
+            },
+
+            setCurrentNoteToNoteWithId(noteId) {
+                this.currentNote = this.notes.find(note => note.id === noteId);
             }
         }
     }
