@@ -1,23 +1,60 @@
 <template>
     <div id="app">
-        <header>
-            <h1>Заметки</h1>
+
+        <header class="box">
+            <h1 class="title is-2 has-text-centered">Заметки</h1>
         </header>
 
-        <label>
-            <input type="text" ref="searchInput"
-                   @input="filterNotesByContainsInputValue">
-        </label>
-        <button @click="setCurrentNoteToEmptyNote">Создать заметку</button>
-        <NotesList :notes="notes" @setCurrentNoteToNoteWithId="setCurrentNoteToNoteWithId"/>
+        <main class="section">
+            <div class="columns is-centered">
 
-        <Note v-if="this.isCurrentNoteInitialized" :id="this.currentNote.id" :content="this.currentNote.content"
-              :title="this.currentNote.title" :date-of-last-change="this.currentNote.dateOfLastChange"
-              @deleteNoteWithId="deleteNoteWithId"
-              @editNoteWithId="editNoteWithId"
-              @createNote="createNote"/>
+                <div class="column is-one-quarter">
+                    <div class="field is-grouped">
+                        <div class="control is-expanded has-icons-right">
+                            <input type="text" placeholder="Найти" class="input is-rounded"
+                                   ref="searchInput"
+                                   @input="filterNotesByContainsInputValue">
 
-        <footer>Тестовое задание</footer>
+                            <span class="icon is-small is-right">
+                                <font-awesome-icon :icon="['fa', 'search']"/>
+                            </span>
+                        </div>
+
+                        <div class="control">
+                            <button type="button" class="button is-info is-rounded"
+                                    @click="setCurrentNoteToEmptyNote">Создать
+                            </button>
+                        </div>
+                    </div>
+                    <aside class="field menu">
+                        <div class="control">
+                            <p class="menu-label">Ваши заметки</p>
+
+                        </div>
+                        <div class="control">
+                            <NotesList class="menu-list" :notes="notes"
+                                       @setCurrentNoteToNoteWithId="setCurrentNoteToNoteWithId"/>
+                        </div>
+
+                    </aside>
+                </div>
+
+                <Note class="column is-one-third"
+                      v-if="this.isCurrentNoteInitialized"
+                      :id="this.currentNote.id"
+                      :content="this.currentNote.content"
+                      :title="this.currentNote.title"
+                      :date-of-last-change="this.currentNote.dateOfLastChange"
+                      @deleteNoteWithId="deleteNoteWithId"
+                      @editNoteWithId="editNoteWithId"
+                      @createNote="createNote"/>
+            </div>
+        </main>
+
+        <footer class="footer has-text-centered">
+            <p>Тестовое задание на практику от компании VR Supersonic. 2020</p>
+            <p>Код тут -> <a href="https://github.com/Dimedrolity/Notes" target="_blank">github</a></p>
+        </footer>
     </div>
 </template>
 
@@ -50,12 +87,7 @@
                 if (response.ok) {
                     this.notes = await response.json();
 
-                    if (this.notes.length > 0)
-                        this.currentNote = this.notes[0];
-                    else
-                        this.setCurrentNoteToEmptyNote();
-
-                    this.isCurrentNoteInitialized = true;
+                    this.initializeCurrentNote();
                 }
             },
 
@@ -78,6 +110,8 @@
 
                 if (response.ok) {
                     this.notes = await response.json();
+
+                    this.initializeCurrentNote();
                 }
             },
 
@@ -87,7 +121,7 @@
                 formData.append('Title', noteTitle);
                 formData.append('Content', noteContent);
 
-                const response = await fetch(`https://localhost:5001/api/notes/change`, {
+                const response = await fetch(`https://localhost:5001/api/notes/edit`, {
                     method: 'PUT',
                     body: formData
                 });
@@ -113,15 +147,25 @@
             },
 
             setCurrentNoteToEmptyNote() {
-                this.currentNote = {title: '', content: ''};
+                this.currentNote = {id: null, title: '', content: '', dateOfLastChange: null};
             },
 
             setCurrentNoteToNoteWithId(noteId) {
                 this.currentNote = this.notes.find(note => note.id === noteId);
+            },
+
+            initializeCurrentNote() {
+                if (this.notes.length > 0)
+                    this.currentNote = this.notes[0];
+                else
+                    this.setCurrentNoteToEmptyNote();
+
+                this.isCurrentNoteInitialized = true;
             }
         }
     }
 </script>
 
-<style>
+<style scoped>
+
 </style>

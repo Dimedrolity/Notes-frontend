@@ -1,22 +1,37 @@
 <template>
     <div>
-        <button type="button" @click="emitDeleteOfThisNote()">Х</button>
+        <div class="field is-grouped is-grouped-right">
+            <div class="control">
+                <button type="button" class="button is-danger is-outlined is-rounded"
+                        @click="emitDeleteOfThisNote()">Удалить заметку
+                </button>
+            </div>
+        </div>
 
-        <label>
-            <input type="text" placeholder="Введите заголовок заметки" :value="this.title"
-                   ref="noteTitle">
-        </label>
+        <div class="field">
+            <div class="control">
+                <input type="text" placeholder="Введите заголовок заметки" class="input"
+                       :value="this.title" ref="noteTitle">
+            </div>
+        </div>
 
-        <label>
-            <textarea cols="30" rows="10"
-                      placeholder="Введите содержимое заметки" :value="this.content"
-                      ref="noteContent"></textarea>
-        </label>
+        <div class="field">
+            <div class="control">
+                <textarea placeholder="Введите содержимое заметки" class="textarea"
+                          :value="this.content" ref="noteContent"></textarea>
+            </div>
+        </div>
 
-        <button v-if="this.id != null" type="button" @click="emitEditOfThisNote()">Сохранить</button>
-        <button v-else type="button" @click="emitCreateOfThisNote">Создать</button>
-
-        <span v-if="this.dateOfLastChange != null">{{this.dateOfLastChange}}</span>
+        <div class="field jcsb">
+            <div class="control">
+                <span v-if="this.dateOfLastChange != null">{{this.dateOfLastChange}}</span>
+            </div>
+            <div class="control">
+                <button type="button" class="button is-success is-rounded"
+                        @click="emitSaveOfThisNote">Сохранить
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -25,10 +40,11 @@
         name: "Note",
         props: {
             id: {
-                type: Number,
+                validator: prop => typeof prop === 'number' || prop === null,
+                required: true,
             },
             title: {
-                type: String,
+                validator: prop => typeof prop === 'string' || prop === null,
                 required: true,
             },
             content: {
@@ -36,16 +52,30 @@
                 required: true,
             },
             dateOfLastChange: {
-                type: String,
+                validator: prop => typeof prop === 'string' || prop === null,
+                required: true,
             },
         },
         methods: {
             emitDeleteOfThisNote() {
                 this.$emit('deleteNoteWithId', this.id);
             },
-            emitEditOfThisNote() {
-                this.$emit('editNoteWithId', this.id, this.$refs.noteTitle.value, this.$refs.noteContent.value);
+
+            emitSaveOfThisNote() {
+                if (this.id != null)
+                    this.emitEditOfThisNote();
+                else
+                    this.emitCreateOfThisNote();
             },
+
+            emitEditOfThisNote() {
+                if (this.$refs.noteContent.value === '') {
+                    alert('Введите содержимое заметки');
+                } else
+                    this.$emit('editNoteWithId',
+                        this.id, this.$refs.noteTitle.value, this.$refs.noteContent.value);
+            },
+
             emitCreateOfThisNote() {
                 this.$emit('createNote', this.$refs.noteTitle.value, this.$refs.noteContent.value);
             }
@@ -54,4 +84,8 @@
 </script>
 
 <style scoped>
+    .jcsb {
+        display: flex;
+        justify-content: space-between;
+    }
 </style>

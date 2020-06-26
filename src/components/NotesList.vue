@@ -1,12 +1,12 @@
 <template>
-    <div>
-        <ul>
-            <li v-for="note in this.notes" :key="note.id" @click="emitSetCurrentNoteToNoteWithId(note.id)">
+    <ul>
+        <li v-for="note in this.notes" :key="note.id" @click="emitSetCurrentNoteToNoteWithId(note.id)">
+            <a>
                 <span v-if="note.title != null">{{note.title}}</span>
                 <span v-else>{{note.content}}</span>
-            </li>
-        </ul>
-    </div>
+            </a>
+        </li>
+    </ul>
 </template>
 
 <script>
@@ -27,4 +27,5 @@
 </script>
 
 <style scoped>
+
 </style>
