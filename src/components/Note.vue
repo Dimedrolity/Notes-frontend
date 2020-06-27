@@ -62,18 +62,18 @@
             },
 
             emitSaveOfThisNote() {
-                if (this.id != null)
-                    this.emitEditOfThisNote();
-                else
-                    this.emitCreateOfThisNote();
+                if (this.$refs.noteContent.value === '') {
+                    alert('Введите содержимое заметки');
+                } else {
+                    if (this.id !== null)
+                        this.emitEditOfThisNote();
+                    else
+                        this.emitCreateOfThisNote();
+                }
             },
 
             emitEditOfThisNote() {
-                if (this.$refs.noteContent.value === '') {
-                    alert('Введите содержимое заметки');
-                } else
-                    this.$emit('editNoteWithId',
-                        this.id, this.$refs.noteTitle.value, this.$refs.noteContent.value);
+                this.$emit('editNoteWithId', this.id, this.$refs.noteTitle.value, this.$refs.noteContent.value);
             },
 
             emitCreateOfThisNote() {
