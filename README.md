@@ -1,4 +1,7 @@
-# notes
+# Notes-frontend
+Тестовое задание на практику (веб-разработка, C#) от компании VR Supersonic. 2020
+
+Это frontend проекта [Notes](https://github.com/Dimedrolity/Notes).
 
 ## Project setup
 ```
